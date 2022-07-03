@@ -1,4 +1,39 @@
+let HTML = `
+<link rel="stylesheet" href="styles.css"/>
+<div class="Bot">
+<div class="TextoBolinha">
+     <p>Vamos conversar sobre o seu projeto de adequação à LGPD?</p>
+</div>
+<div class="Bolinha">
+ <img class="Foto" src="foto.jpg" />
+</div>
+</div>
 
+
+<div class="TelaBot some">
+    <div class="Cabecalho">
+        <div class="FotoCab">
+            <img class="Foto" src="foto.jpg"/>
+            <p class="PFoto">Wesley Souza</p>
+        </div>
+        <div class="Sair">
+            <p> X </p>   
+        </div>
+    </div>
+    <div class="Conversa">
+         <div class="MenEu">
+            <p>Vamos conversar sobre o seu projeto de adequação à LGPD?</p>
+         </div>
+         <div class="MenCli">
+            <p>Olá, vamos sim</p>
+         </div>
+    </div>
+    <input class="Campo" />
+</div>
+
+`
+
+//document.body.innerHTML += HTML;
 
 setInterval(function(){
     const texto1 = document.querySelector('.TextoBolinha').classList.add('some');
@@ -190,7 +225,10 @@ function inatividade(){
 }
 
   
+function criaBalao(){
 
+
+}
 
 
 
