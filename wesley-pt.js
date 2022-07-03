@@ -1,3 +1,5 @@
+
+
 setInterval(function(){
     const texto1 = document.querySelector('.TextoBolinha').classList.add('some');
 },5000);
@@ -6,8 +8,14 @@ setInterval(function(){
 
 const bot = document.querySelector('.Bolinha');
 bot.addEventListener("click", ()=>{
-    document.querySelector('.Chat').classList.toggle('some');
+    document.querySelector('.TelaBot').classList.toggle('some');
     bot.classList.add('some');
+})
+
+const sair = document.querySelector('.Sair');
+sair.addEventListener("click", ()=>{
+    document.querySelector('.TelaBot').classList.toggle('some');
+    bot.classList.remove('some');
 })
 
 // -------------------- Inicia ChatBot ------------------------------------------------------------ 
@@ -42,33 +50,10 @@ fetch(endpoint, options)
     })
 
 const setBotConfig= (data) => {
-    let divBot = document.createElement("div")
-
-        
-   /* h1.innerHTML = `
-        <td><img src="${data.avatar_url}" width="50" height="50"></td>
-        <td>${data.name}</td>
-        <td>${data.public_repos}</td>
-        <td>${data.followers}</td>`; */
-   
-        h1.innerHTML = `
-        <p>teste nome</p>
-        <p>teste resposta</p>
-        <p>teste seguidores</p>`; 
+  
 }
-
-
-
 // ----------------------- APIs --------------------------------------------------------------------
-    const h2 = document.createElement("h2")
-    const texto = document.createTextNode("teste de texto")
-    h2.appendChild(texto)
-    console.log(h2)
 
-    h2.innerHTML = `
-    <p>teste nome</p>
-    <p>teste resposta</p>
-    <p>teste seguidores</p>`; 
 
   
 /*
@@ -204,8 +189,7 @@ function inatividade(){
     }, 300000);
 }
 
-
-   
+  
 
 
 
