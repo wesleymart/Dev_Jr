@@ -1,5 +1,16 @@
-// -------------------- Inicia ChatBot ------------------------------------------------------------ 
+setInterval(function(){
+    const texto1 = document.querySelector('.TextoBolinha').classList.add('some');
+},5000);
 
+
+
+const bot = document.querySelector('.Bolinha');
+bot.addEventListener("click", ()=>{
+    document.querySelector('.Chat').classList.toggle('some');
+    bot.classList.add('some');
+})
+
+// -------------------- Inicia ChatBot ------------------------------------------------------------ 
 const update = {
     'credencial':{
         'token': 'e1d1f5fac5b182348b77310f18b9b4a1'
@@ -31,8 +42,9 @@ fetch(endpoint, options)
     })
 
 const setBotConfig= (data) => {
-    let h1 = document.querySelector('.container');
-        console.log(h1)
+    let divBot = document.createElement("div")
+
+        
    /* h1.innerHTML = `
         <td><img src="${data.avatar_url}" width="50" height="50"></td>
         <td>${data.name}</td>
@@ -52,6 +64,11 @@ const setBotConfig= (data) => {
     const texto = document.createTextNode("teste de texto")
     h2.appendChild(texto)
     console.log(h2)
+
+    h2.innerHTML = `
+    <p>teste nome</p>
+    <p>teste resposta</p>
+    <p>teste seguidores</p>`; 
 
   
 /*
@@ -186,6 +203,11 @@ function inatividade(){
 
     }, 300000);
 }
+
+
+   
+
+
 
 
 
