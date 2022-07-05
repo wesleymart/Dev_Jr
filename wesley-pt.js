@@ -39,6 +39,10 @@ setInterval(function(){
     const texto1 = document.querySelector('.TextoBolinha').classList.add('some');
 },5000);
 
+setInterval(function(){
+    let pergunta = "Pergunta de teste"
+    criaPergunta(pergunta);
+},6000);
 
 
 const bot = document.querySelector('.Bolinha');
@@ -53,40 +57,38 @@ sair.addEventListener("click", ()=>{
     bot.classList.remove('some');
 })
 
+const chat = document.querySelector('.Conversa')
+
 // -------------------- Inicia ChatBot ------------------------------------------------------------ 
-const update = {
-    'credencial':{
-        'token': 'e1d1f5fac5b182348b77310f18b9b4a1'
-    }
-    };
+
+var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
+
+    const body={ credencial: credencial};
     
-    const options = {
-    method: 'POST',
-    headers: {
-    'content-type': 'application/json',
-    'Cache-Control': 'no-cache'
-    },
-    body: JSON.stringify(update),
-    };
+     fetch("//api.jepherson.com.br/configuration.php",
+              {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
+            .then((data) =>{
+                  const cliente = data.cliente;
+                  const code_bot = data.code_bot;
+                  const config = data.configuracao
+                  //console.log("cliente" )
+                  console.log(cliente)
+                  //console.log("bot")
+                  console.log(code_bot)
+                  console.log(config)
+    
+                  document.querySelector('.Bolinha').style.backgroundImage = 'url(' + config.imagem + ')';
+                  document.querySelector('.FotoCab').style.backgroundImage = 'url(' + config.imagem + ')';
+                  let css = document.querySelector('.Cabecalho')
+                  css.style.backgroundColor = config.cor_borda
+                  css.style.textColor = config.cor_letra
+                  let textoLateral = document.querySelector('.PLateral')
+                  textoLateral.innerHTML = config.descricao;
+                  let balao1 = document.querySelector('.Balao1')
+                  balao1.innerHTML = config.descricao;
+                  
+            });
 
-const endpoint = 'http://api.jepherson.com.br/chat.php';
-
-fetch(endpoint, options)
-    .then(response => {
-        response.json()
-            .then(
-                data => {
-                    setBotConfig(data);
-            //Demais ações aqui
-                })
-    })
-    .catch(error => {
-        console.log(error);
-    })
-
-const setBotConfig= (data) => {
-  
-}
 // ----------------------- APIs --------------------------------------------------------------------
 
 
@@ -103,26 +105,36 @@ const setBotConfig= (data) => {
             console.log(update);}).catch(e => {
       console.log(e);
       });
-*/
-function pega_config(){
-    var url = 'http://api.jepherson.com.br/configuration.php'
-    var body = {
-        'credencial':{
-            'token': 'e1d1f5fac5b182348b77310f18b9b4a1'
-        }
-    }
-    let request = new XMLHttpRequest()
-    request.open("POST", url, true)
-    request.setRequestHeader('Cache-Control', 'no-cache')
-    request.setRequestHeader('Content-Type', 'application/json')
-    request.send(JSON.stringify(body))
-    request.onload = function(){
-        console.log(this.responseText)
-    }
-    const code_chat = request.responseText.code_chat
-    console.log(code_chat)
-}
 
+function pega_config(){
+   
+    var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
+
+    const body={ credencial: credencial};
+    
+     fetch("//api.jepherson.com.br/configuration.php",
+              {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
+            .then((data) =>{
+                  const cliente = data.cliente;
+                  const code_bot = data.code_bot;
+                  const config = data.configuracao
+                  //console.log("cliente" )
+                  console.log(cliente)
+                  //console.log("bot")
+                  console.log(code_bot)
+                  console.log(config)
+    
+                  let foto = document.querySelector('.Foto')
+                  foto.innerHTML = config.imagem;
+                  let css = document.querySelector('.Cabecalho')
+                  css.style.backgroundColor = config.cor_borda
+                  css.style.textColor = config.cor_letra
+    
+                
+                  
+            });
+}
+*/
 function abrir_chat(){
     var url = "http://api.jepherson.com.br/start_chat.php"
     var body = {
@@ -225,11 +237,31 @@ function inatividade(){
 }
 
   
-function criaBalao(){
+function criaPergunta(pergunta){
+    
+    let BalaoPergunta = `
+    <div class="MenCli">
+    <p>${pergunta} </p>
+    </div>
+`
+chat.innerHTML += BalaoPergunta;
+
+//const paragrafo = document.querySelector('#Ppergunta')
+//paragrafo.innerHTML += pergunta
+
 
 
 }
 
+function criaResposta(response){
+
+let BalaoResposta = ` 
+    <div class="MenEu">
+        <p>${response}</p>
+    </div>
+    `
+    chat.innerHTML += BalaoResposta;
+}
 
 
 
