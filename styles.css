@@ -12,8 +12,6 @@
 
 .Bot{
     position: absolute;
-    right: 0px;
-    right:2% ;
     bottom: 5%;
     height: 100px;
     width: 500px; 
@@ -41,7 +39,7 @@
 .TelaBot{
     height: 430px;
     width: 400px;
-    position: fixed;
+    position: absolute;
     right:6%;
     bottom: 10%; 
     align-items: center;
@@ -71,9 +69,14 @@
 .Sair{
     font-size: 20px;
     padding: 3px;
+    margin-left: 130px;
+}
+.Finalizar{
+    font-size: 20px;
+    padding: 3px;
+    margin-top: 5px;
     margin-left: 20px;
 }
-
 
 
 .Campo{
@@ -134,9 +137,3 @@
     margin-top: 20px;
 }
 
-.Finalizar{
-    font-size: 20px;
-    padding: 3px;
-    margin-top: 5px;
-    margin-left: 130px;
-}
