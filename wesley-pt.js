@@ -35,20 +35,65 @@ let HTML = `
 
 //document.body.innerHTML += HTML;
 const chat = document.querySelector('.Conversa')
+setTimeout(CincoSegundos, 1000*5);
+let contador = 0
+localStorage.setItem('Contador', contador) 
 
-setInterval(function(){
+function CincoSegundos(){
     const texto1 = document.querySelector('.TextoBolinha').classList.add('some');
-},5000);
-
-
-
+}
 
 const bot = document.querySelector('.Bolinha');
 bot.addEventListener("click", ()=>{
     document.querySelector('.TelaBot').classList.toggle('some');
     bot.classList.add('some');
-    abrir_chat();
+      let retorno = verificaChat()
+      if(retorno == null){
+          abrir_chat()
+          setInterval(function(){
+              inatividade(retorno)
+           },1000*60*5);
+      }else{
+        var contador = localStorage.getItem("Contador") 
+
+        for(let i = 1 ; i<= contador; i++){
+            let pergunta = localStorage.getItem("Pergunta" + i) 
+            RestauraPergunta(pergunta)
+            let resposta = localStorage.getItem("Resposta" + i) 
+            RestauraPergunta(resposta)
+        }
+        setInterval(function(){
+            inatividade(retorno)
+         },1000*60*5);
+    
+    
+      }
+
 })
+
+
+function fecha_chat(code_do_chat){
+    localStorage.clear()
+    var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
+
+    const body={ 
+        credencial: credencial,
+        code_chat: code_do_chat
+    };
+    
+     fetch("//api.jepherson.com.br/end_chat.php",
+              {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
+            .then((data) =>{
+                if (!data.ok) {
+                    throw Error(data.status);
+                   }
+                   return data.json()}).then(update => {
+                    console.log(update);}).catch(e => {
+              console.log(e);
+              });
+    
+}
+
 
 function enviarPergunta(codigo_chat){
     console.log(codigo_chat)
@@ -70,10 +115,6 @@ sair.addEventListener("click", ()=>{
 })
 
 
-
-
-
-
 // -------------------- Inicia ChatBot ------------------------------------------------------------ 
 
 var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
@@ -83,12 +124,7 @@ var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
      fetch("//api.jepherson.com.br/configuration.php",
               {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
             .then((data) =>{
-                  //const cliente = data.cliente;
-                  //const code_bot = data.code_bot;
                   const config = data.configuracao
-                  //console.log("cliente" )
-                  //console.log(cliente)
-                  //console.log("bot")
                   console.log(config)
     
                   document.querySelector('.Bolinha').style.backgroundImage = 'url(' + config.imagem + ')';
@@ -102,11 +138,6 @@ var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
                   balao1.innerHTML = config.descricao;
                   
             });
-
-// ----------------------- APIs --------------------------------------------------------------------
-
-
-  
 /*
                 TRATAMENTO  DE ERRO
   
@@ -130,34 +161,17 @@ function abrir_chat(){
               {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
             .then((data) =>{
                 enviarPergunta(data.code_chat)
+                localStorage.setItem('Codigo_do_chat', data.cod_chat) 
+                setTimeout(fecha_chat(data.code_chat), 1000*60*30);
             });
-            
-        }
-// -------------------------------------fim das APIs -------------------------------------------
-
-function fecha_30(data){
-    let data1 = new Date();
-    console.log(data1)
-    
-    let data2 = new Date(data1.getUTCFullYear(), data1.getUTCMonth(), data1.getUTCDate(), data1.getUTCHours()-3, (data1.getUTCMinutes()+30))
-    if (data1 = data2){
-        fecha_chat()
-        console.log(data2)
-    }
 }
 
 function inatividade(){
-    setInterval(function() {
-    let data1 = new Date();
-    console.log(data1)
 
-    let response = busca_chat();
-    let data2 = response.date 
+    
 
-    }, 300000);
 }
 
-  
 function criaPergunta(pergunta, cod_chat){
     
     let BalaoPergunta = `
@@ -166,14 +180,14 @@ function criaPergunta(pergunta, cod_chat){
     </div>
 `
 chat.innerHTML += BalaoPergunta;
+localStorage.setItem('Contador', contador += 1) 
+localStorage.setItem('Pergunta'+ contador, pergunta)
+ 
 
-criaResposta(pergunta, cod_chat)
-
-
-
+criaResposta(pergunta, cod_chat, contador)
 }
 
-function criaResposta(pergunta, cod_chat){
+function criaResposta(pergunta, cod_chat, contador){
  
     console.log(pergunta)
     console.log("chat ")
@@ -183,24 +197,62 @@ function criaResposta(pergunta, cod_chat){
 
     const body={ 
         credencial: credencial,
-        code_chat: cod_chat,
-        chat_client: pergunta
-    
+        // code_chat: cod_chat,
+        // chat_client: pergunta
     };
-    
-     fetch("//api.jepherson.com.br/chat.php",
-              {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
-            .then((data) =>{
+     fetch("//api.jepherson.com.br/start_chat.php",
+              {method:'post',body:JSON.stringify(body)}).then((response)=> response.json()).then((data) =>{
+                console.log(data.cod_chat)
                 let BalaoResposta = ` 
                         <div class="MenEu">
-                            <p>${data.resposta}</p>
+                            <p>${data.cod_chat}</p>
                          </div>
-                        `
+                        `  
+                localStorage.setItem('Resposta'+ contador, cod_chat)                  
                 chat.innerHTML += BalaoResposta;
             });
             
 }
 
+function verificaChat(){
+    var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
+
+    const body={ credencial: credencial    }; 
+     fetch("//api.jepherson.com.br/start_chat.php",
+              {method:'post',body:JSON.stringify(body)}).then((response)=> response.json()).then((data) =>{
+                  if(data.code_chat != null){
+                   let teste = data
+                   return teste
+                  }
+            });
+}
+
+function RestauraPergunta(pergunta){
+    let BalaoPergunta = ` 
+    <div class="MenEu">
+        <p>${pergunta}</p>
+     </div>
+    `               
+chat.innerHTML += BalaoPergunta;
+}
+
+function RestauraResposta(resposta){
+    let BalaoPergunta = ` 
+    <div class="MenEu">
+        <p>${resposta}</p>
+     </div>
+    `               
+chat.innerHTML += BalaoResposta;
+}
+
+
+
+
+
+
+
+// var nome = document.getElementById('nome').value;
+// 			localStorage.setItem('name', nome) 
 
 
 

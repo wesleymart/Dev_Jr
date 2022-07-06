@@ -3,6 +3,7 @@
     background-color: #CBEBC0;
 }
 .Bolinha{
+
     height: 90px;
     width: 90px;
     border-radius: 50%;
@@ -10,7 +11,8 @@
 }
 
 .Bot{
-    position: fixed;
+    position: absolute;
+    right: 0px;
     right:2% ;
     bottom: 5%;
     height: 100px;
@@ -22,6 +24,7 @@
 }
 
 .TextoBolinha{
+    
     height: 50px;
     width: 80%;
     padding: 10px;
@@ -62,6 +65,8 @@
     height: 80%;
     width: 100%; 
     background-color: #FFF;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 
 
