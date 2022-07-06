@@ -54,7 +54,6 @@
     height: 20%;
     width: 100%;
     background-color: #FFF;
-    //justify-content: space-between;
     display: flex;
     align-items: center;
     border-top-left-radius: 20px;
@@ -66,14 +65,13 @@
     width: 100%; 
     background-color: #FFF;
     overflow-y: scroll;
-    scroll-behavior: smooth;
 }
 
 
 .Sair{
     font-size: 20px;
-    padding: 30px;
-    margin-left: 110px;
+    padding: 3px;
+    margin-left: 20px;
 }
 
 
@@ -124,16 +122,21 @@
 .FotoCab{
     height: 60px;
     width: 60px;
-    display: flex;
     align-items: center;
     border-radius: 50%;
     padding: 5px;
-    margin-left: 3px;
+    margin-left: 5px;
 }
 
 .PFoto{
     font-size: 20px;
     padding: 5px;
     margin-top: 20px;
-    margin-right: 20px;
+}
+
+.Finalizar{
+    font-size: 20px;
+    padding: 3px;
+    margin-top: 5px;
+    margin-left: 130px;
 }

@@ -36,8 +36,14 @@ let HTML = `
 //document.body.innerHTML += HTML;
 const chat = document.querySelector('.Conversa')
 setTimeout(CincoSegundos, 1000*5);
-let contador = 0
-localStorage.setItem('Contador', contador) 
+let contador = localStorage.getItem("Contador")
+ 
+
+if(contador == null || contador == undefined){
+     contador = 0
+     localStorage.setItem('Contador', contador) 
+ }
+
 
 function CincoSegundos(){
     const texto1 = document.querySelector('.TextoBolinha').classList.add('some');
@@ -47,20 +53,20 @@ const bot = document.querySelector('.Bolinha');
 bot.addEventListener("click", ()=>{
     document.querySelector('.TelaBot').classList.toggle('some');
     bot.classList.add('some');
-      let retorno = verificaChat()
-      if(retorno == null){
+      //let retorno = verificaChat()
+      if(contador == 0 ){
+        console.log("abri um chat")
           abrir_chat()
           setInterval(function(){
               inatividade(retorno)
            },1000*60*5);
       }else{
-        var contador = localStorage.getItem("Contador") 
 
         for(let i = 1 ; i<= contador; i++){
             let pergunta = localStorage.getItem("Pergunta" + i) 
             RestauraPergunta(pergunta)
             let resposta = localStorage.getItem("Resposta" + i) 
-            RestauraPergunta(resposta)
+            RestauraResposta(resposta)
         }
         setInterval(function(){
             inatividade(retorno)
@@ -114,6 +120,12 @@ sair.addEventListener("click", ()=>{
     bot.classList.remove('some');
 })
 
+const fechar = document.querySelector('.Fechar');
+fechar.addEventListener("click", ()=>{
+    let code_do_chat = localStorage.getItem("Codigo_do_chat")
+    fecha_chat(code_do_chat)
+})
+
 
 // -------------------- Inicia ChatBot ------------------------------------------------------------ 
 
@@ -161,8 +173,8 @@ function abrir_chat(){
               {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
             .then((data) =>{
                 enviarPergunta(data.code_chat)
-                localStorage.setItem('Codigo_do_chat', data.cod_chat) 
-                setTimeout(fecha_chat(data.code_chat), 1000*60*30);
+                 
+                setTimeout(fecha_chat(data.code_chat), 1800000);
             });
 }
 
@@ -180,6 +192,7 @@ function criaPergunta(pergunta, cod_chat){
     </div>
 `
 chat.innerHTML += BalaoPergunta;
+localStorage.setItem('Codigo_do_chat', cod_chat)
 localStorage.setItem('Contador', contador += 1) 
 localStorage.setItem('Pergunta'+ contador, pergunta)
  
@@ -229,7 +242,7 @@ function verificaChat(){
 
 function RestauraPergunta(pergunta){
     let BalaoPergunta = ` 
-    <div class="MenEu">
+    <div class="MenCli">
         <p>${pergunta}</p>
      </div>
     `               
@@ -237,7 +250,7 @@ chat.innerHTML += BalaoPergunta;
 }
 
 function RestauraResposta(resposta){
-    let BalaoPergunta = ` 
+    let BalaoResposta = ` 
     <div class="MenEu">
         <p>${resposta}</p>
      </div>
