@@ -1,12 +1,11 @@
+function CriaBot(){
 let HTML = `
 <link rel="stylesheet" href="styles.css"/>
-<body class="body">
 <div class="Bot">
 <div class="TextoBolinha">
      <p class="PLateral"></p>
 </div>
 <div class="Bolinha">
- <img class="Foto" />
 </div>
 </div>
 <div class="TelaBot some">
@@ -28,19 +27,19 @@ let HTML = `
     </div>
     <input  class="Campo" placeholder="Digite sua pergunta" />
 </div>
-</body>
 `
 
-function CriaBot(){
-document.body.innerHTML += HTML;
+
+document.body.innerHTML += HTML
+
 const chat = document.querySelector('.Conversa')
+let retorno = ""
 
 setTimeout(CincoSegundos, 5000);
-let contador = localStorage.getItem("Contador")
-if(contador == null || contador == undefined){
-     contador = 0
-     localStorage.setItem('Contador', contador) 
- }
+
+let contador = 0
+     
+
 
 var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'};
 
@@ -68,6 +67,7 @@ var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'};
                   css.style.backgroundColor = config.cor_borda
                   css.style.textColor = config.cor_letra
                   let textoLateral = document.querySelector('.PLateral')
+                  localStorage.setItem("texto", config.descricao)
                   textoLateral.innerHTML = config.descricao;
                   let balao1 = document.querySelector('.Balao1')
                   balao1.innerHTML = config.descricao;
@@ -84,10 +84,9 @@ sair.addEventListener("click", ()=>{
 
 const fechar = document.querySelector('.Finalizar');
 fechar.addEventListener("click", ()=>{
-    let code_do_chat = localStorage.getItem("Codigo_do_chat")
     document.querySelector('.TelaBot').classList.toggle('some');
     bot.classList.remove('some');
-    fecha_chat(code_do_chat)
+    fecha_chat()
 
 })
 
@@ -95,19 +94,22 @@ const bot = document.querySelector('.Bolinha');
 bot.addEventListener("click", ()=>{
     document.querySelector('.TelaBot').classList.toggle('some');
     bot.classList.add('some');
-//    let retorno = verificaChat()
-//    console.log(retorno)
-      if(contador == 0 ){
-          abrir_chat()
+      verificaChat();
+      setTimeout(()=>{
+        localStorage.setItem('Codigo_do_chat', retorno)
+      if(retorno == "" ){
+        abrir_chat()
           setInterval(function(){
                                 let codchat = localStorage.getItem("Codigo_do_chat") 
                                 inatividade(codchat)
                                 },1000*60*5);
         }else{
+        let setTexto = localStorage.getItem("texto")
         chat.innerHTML = `
         <div class="MenEu">
-            <p>Vamos conversar sobre o seu projeto de adequação à LGPD?</p>
+            <p>${setTexto}</p>
         </div>`
+        contador = localStorage.getItem("Contador")
         for(let i = 1 ; i<= contador; i++){
             let pergunta = localStorage.getItem("Pergunta" + i) 
             RestauraPergunta(pergunta)
@@ -128,7 +130,8 @@ bot.addEventListener("click", ()=>{
             inatividade(cod_chat)
          },1000*60*5);
       }
-
+     
+      }, 1000)
 });
 
 function CincoSegundos(){
@@ -191,7 +194,6 @@ function criaPergunta(pergunta, cod_chat){
     </div>
 `
 chat.innerHTML += BalaoPergunta;
-localStorage.setItem('Codigo_do_chat', cod_chat)
 localStorage.setItem('Contador', contador += 1) 
 localStorage.setItem('Pergunta'+ contador, pergunta)
 let minuto = new Date()
@@ -234,22 +236,18 @@ function verificaChat(){
     const body={ credencial: credencial,}; 
      fetch("//api.jepherson.com.br/list_chat.php",
               {method:'post',body:JSON.stringify(body)}).then((response)=> response.json()).then((data) =>{
-                
+                if(data != null){
+                retorno = data.code_chat
+                }
                  if (data.status === 401) {
                      throw Error(data.status);
-                    }else if(data == undefined){
-                    let aberto = "aberto"
-                    console.log(aberto)
-                    return aberto
-                   }if(data.status === 204){
-                     console.log(data.status)
-                     let fechado = "fechado"
-                     return fechado
                    }
                  }
              ).catch(e => {
-                 console.log(e);
+                 
                  });
+                 
+                 
     }
 function RestauraPergunta(pergunta){
     let BalaoPergunta = ` 
@@ -270,10 +268,11 @@ chat.innerHTML += BalaoResposta;
 }
 
 function fecha_chat(){
-    let code_do_chat = localStorage.getItem("Codigo_do_chat")
+    verificaChat()
+    code_do_chat = retorno
     localStorage.clear()
     chat.innerHTML = ""
-    location.reload();
+   
      var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'}
      const body={ 
          credencial: credencial,
@@ -282,17 +281,19 @@ function fecha_chat(){
       fetch("//api.jepherson.com.br/end_chat.php",
                {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
              .then((data) =>{
+                console.log("fechei ")
                  if (!data.ok) {
                      throw Error(data.status);
                     }
                     return data.json()}).then(update => {
                      console.log(update);}).catch(e => {
-               console.log(e);
+               
                });
+             setTimeout(()=>{ location.reload();},1000);
     
 }
-}
 
+}
 window.onload = CriaBot;
 
 
