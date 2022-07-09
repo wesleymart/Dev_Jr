@@ -1,5 +1,6 @@
 let HTML = `
 <link rel="stylesheet" href="styles.css"/>
+<body class="body">
 <div class="Bot">
 <div class="TextoBolinha">
      <p class="PLateral"></p>
@@ -27,10 +28,13 @@ let HTML = `
     </div>
     <input  class="Campo" placeholder="Digite sua pergunta" />
 </div>
+</body>
 `
 
+function CriaBot(){
 document.body.innerHTML += HTML;
 const chat = document.querySelector('.Conversa')
+
 setTimeout(CincoSegundos, 5000);
 let contador = localStorage.getItem("Contador")
 if(contador == null || contador == undefined){
@@ -38,21 +42,16 @@ if(contador == null || contador == undefined){
      localStorage.setItem('Contador', contador) 
  }
 
-
-function CincoSegundos(){
-    const texto1 = document.querySelector('.TextoBolinha').classList.add('some');
-}
-
-var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
+var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'};
 
     const body={ credencial: credencial};
     
      fetch("//api.jepherson.com.br/configuration.php",
               {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
             .then((data) =>{
-                if (!data.status === 200) {
-                    throw Error(data.status);
-                   }else{
+                 if (!data.status === 200) {
+                     throw Error(data.status);
+                    }else{
                   const config = data.configuracao
                   let direcaoTela = document.querySelector('.TelaBot')
                   let direcaoBola = document.querySelector('.Bot')
@@ -96,9 +95,10 @@ const bot = document.querySelector('.Bolinha');
 bot.addEventListener("click", ()=>{
     document.querySelector('.TelaBot').classList.toggle('some');
     bot.classList.add('some');
+//    let retorno = verificaChat()
+//    console.log(retorno)
       if(contador == 0 ){
           abrir_chat()
-          
           setInterval(function(){
                                 let codchat = localStorage.getItem("Codigo_do_chat") 
                                 inatividade(codchat)
@@ -114,39 +114,48 @@ bot.addEventListener("click", ()=>{
             let resposta = localStorage.getItem("Resposta" + i) 
             RestauraResposta(resposta)
         }
+        let cod_chat = localStorage.getItem("Codigo_do_chat")
+        const campo = document.querySelector('.Campo')
+        campo.onkeydown = function (evento) {
+
+    if (evento.code === 'Enter') {
+        criaPergunta(campo.value, cod_chat)
+        campo.value = ""
+    }
+}
         setInterval(function(){
             let cod_chat = localStorage.getItem("Codigo_do_chat") 
             inatividade(cod_chat)
          },1000*60*5);
       }
 
-})
+});
 
-function fecha_chat(){
-    let code_do_chat = localStorage.getItem("Codigo_do_chat")
-    localStorage.clear()
-    chat.innerHTML = ""
-    location.reload();
-     var credencial = {token:'13ba540599f9e536945e28c59421c36a'}
-     const body={ 
-         credencial: credencial,
-         code_chat: code_do_chat
-     };
-      fetch("//api.jepherson.com.br/end_chat.php",
-               {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
-             .then((data) =>{
-                 if (!data.ok) {
-                     throw Error(data.status);
-                    }
-                    return data.json()}).then(update => {
-                     console.log(update);}).catch(e => {
-               console.log(e);
-               });
-    
+function CincoSegundos(){
+    document.querySelector('.TextoBolinha').classList.add('some');
 }
 
+
+function abrir_chat(){
+    var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'};
+
+    const body={ credencial: credencial};
+     fetch("//api.jepherson.com.br/start_chat.php",
+              {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
+            .then((data) =>{
+                 if (!data.status === 200) {
+                     throw Error(data.status);
+                    }else{
+                        enviarPergunta(data.code_chat)
+                 
+                        setTimeout(fecha_chat, 1800000);
+                   }
+                }).catch(e => {
+                console.log(e);
+                });
+}
 function enviarPergunta(codigo_chat){
-    console.log(codigo_chat)
+    
 const campo = document.querySelector('.Campo')
 campo.onkeydown = function (evento) {
 
@@ -157,27 +166,6 @@ campo.onkeydown = function (evento) {
      
 }
 }
-function abrir_chat(){
-    var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
-
-    const body={ credencial: credencial};
-   
-    
-     fetch("//api.jepherson.com.br/start_chat.php",
-              {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
-            .then((data) =>{
-                if (!data.status === 200) {
-                    throw Error(data.status);
-                   }else{
-                        enviarPergunta(data.code_chat)
-                 
-                        setTimeout(fecha_chat, 1800000);
-                   }
-            }).catch(e => {
-                console.log(e);
-                });
-}
-
 function inatividade(cod_chat){
 
     let agora = new Date()
@@ -214,24 +202,24 @@ criaResposta(pergunta, cod_chat, contador)
 function criaResposta(pergunta, cod_chat, contador){
 
 
-    var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
+    var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'};
 
     const body={ 
         credencial: credencial,
          code_chat: cod_chat,
          chat_client: pergunta
     };
-     fetch("//api.jepherson.com.br/start_chat.php",
+     fetch("//api.jepherson.com.br/chat.php",
               {method:'post',body:JSON.stringify(body)}).then((response)=> response.json()).then((data) =>{
                 if (!data.status === 200) {
                     throw Error(data.status);
                    }else{
                 let BalaoResposta = ` 
                         <div class="MenEu">
-                            <p>${data.cod_chat}</p>
+                            <p>${data.resposta}</p>
                          </div>
                         `  
-                localStorage.setItem('Resposta'+ contador, cod_chat)                  
+                localStorage.setItem('Resposta'+ contador, data.resposta)                  
                 chat.innerHTML += BalaoResposta;
                    }
             }).catch(e => {
@@ -241,24 +229,28 @@ function criaResposta(pergunta, cod_chat, contador){
 }
 
 function verificaChat(){
-    var credencial = {token:'13ba540599f9e536945e28c59421c36a'};
+    var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'};
 
-    const body={ credencial: credencial    }; 
-     fetch("//api.jepherson.com.br/start_chat.php",
+    const body={ credencial: credencial,}; 
+     fetch("//api.jepherson.com.br/list_chat.php",
               {method:'post',body:JSON.stringify(body)}).then((response)=> response.json()).then((data) =>{
-                if (!data.status === 200) {
-                    throw Error(data.status);
-                   }else{  
-                if(data.code_chat != null){
-                   let teste = data
-                   return teste
-                  }
-                }
-            }).catch(e => {
-                console.log(e);
-                });
-}
-
+                
+                 if (data.status === 401) {
+                     throw Error(data.status);
+                    }else if(data == undefined){
+                    let aberto = "aberto"
+                    console.log(aberto)
+                    return aberto
+                   }if(data.status === 204){
+                     console.log(data.status)
+                     let fechado = "fechado"
+                     return fechado
+                   }
+                 }
+             ).catch(e => {
+                 console.log(e);
+                 });
+    }
 function RestauraPergunta(pergunta){
     let BalaoPergunta = ` 
     <div class="MenCli">
@@ -277,9 +269,31 @@ function RestauraResposta(resposta){
 chat.innerHTML += BalaoResposta;
 }
 
+function fecha_chat(){
+    let code_do_chat = localStorage.getItem("Codigo_do_chat")
+    localStorage.clear()
+    chat.innerHTML = ""
+    location.reload();
+     var credencial = {token:'e1d1f5fac5b182348b77310f18b9b4a1'}
+     const body={ 
+         credencial: credencial,
+         code_chat: code_do_chat
+     };
+      fetch("//api.jepherson.com.br/end_chat.php",
+               {method:'post',body:JSON.stringify(body) }).then((response)=> response.json())
+             .then((data) =>{
+                 if (!data.ok) {
+                     throw Error(data.status);
+                    }
+                    return data.json()}).then(update => {
+                     console.log(update);}).catch(e => {
+               console.log(e);
+               });
+    
+}
+}
 
-
-
+window.onload = CriaBot;
 
 
 
